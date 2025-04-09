@@ -44,8 +44,8 @@ void writeMatch(std::ofstream& outputFile, const char* inputBuf, size_t lookahea
     int positionBits = static_cast<int>(std::ceil(std::log2(searchBufSize)));
     int lengthBits = static_cast<int>(std::ceil(std::log2(lookaheadBufSize + 1))); // +1 for zero-length matches
 
-    int positionBytes = (positionBits + 7) / 8; // Round up to the nearest byte
-    int lengthBytes = (lengthBits + 7) / 8;     // Round up to the nearest byte
+    int positionBytes = (positionBits + 7) / 8;
+    int lengthBytes = (lengthBits + 7) / 8;
 
     uint8_t nextChar = static_cast<uint8_t>(inputBuf[lookaheadBufOffset + matchLength]);
     outputFile.write(reinterpret_cast<const char*>(&matchOffset), positionBytes);
@@ -85,7 +85,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    size_t inputSize = static_cast<size_t>(inputSizeSigned); // Cast inputSize once here
+    size_t inputSize = static_cast<size_t>(inputSizeSigned);
 
     char* inputBuf = new char[inputSize];
     if (!inputFile.read(inputBuf, inputSize)) {
@@ -104,13 +104,12 @@ int main(int argc, char* argv[]) {
         searchBufLength = std::min(searchBufSize, lookaheadBufOffset);
         searchBufOffset = std::max(lookaheadBufOffset - searchBufLength, static_cast<size_t>(0));
 
-        lookaheadBufLength = std::min(lookaheadBufSize, inputSize - lookaheadBufOffset); // No need to cast inputSize here
+        lookaheadBufLength = std::min(lookaheadBufSize, inputSize - lookaheadBufOffset);
 
         auto [matchOffset, matchLength] = findLongestMatch(inputBuf, searchBufOffset, searchBufLength, lookaheadBufOffset, lookaheadBufLength);
 
         writeMatch(outputFile, inputBuf, lookaheadBufOffset, matchOffset, matchLength, searchBufSize, lookaheadBufSize);
-        lookaheadBufOffset += matchLength + 1; // Move past the matched sequence and the next character
-    }
+        lookaheadBufOffset += matchLength + 1;
 
     delete[] inputBuf;
     inputFile.close();

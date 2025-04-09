@@ -2,7 +2,7 @@
 
 This project implements LZ77 compression (`lz77.cpp`) and decompression (`lz77d.cpp`).
 
-## Build Instructions
+## Build
 
 Use the provided `Makefile` to build the executables:
 
